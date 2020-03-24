@@ -10,8 +10,7 @@ module.exports = (app, md5, upload) => {
             data: JSON.stringify(req.body) 
         }
 
-        sqlFunc.addPersonResume(sqlWord,(data)=>{
-            console.log(data,12344312);
+        sqlFunc.addPersonResume(sqlWord,(data)=>{ 
             if(data.affectedRows){
                 res.send(JSON.stringify({
                     statusCode: 200,

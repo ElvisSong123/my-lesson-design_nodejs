@@ -1,7 +1,8 @@
 let mysql = require('./index.js')
 function findUser(sqlWord,callback){
     let connection = mysql();
-    connection.query("select * from userlogin where username = '" + sqlWord + "'",(err,data)=>{
+    let query = "select * from userlogin where username = ?;"
+    connection.query(query,sqlWord,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -17,12 +18,15 @@ function findUser(sqlWord,callback){
 function updateUser(sqlWord,callback){
     let connection = mysql();
     let query = '';
+    let params;
     if(sqlWord.avatar){
-        query = "update userlogin set password = '" + sqlWord.password + "', avatar = '"+ sqlWord.avatar +"' where username = '" + sqlWord.username + "'"
+        query = "update userlogin set password = ?, avatar = ? where username = ?"
+        params = [sqlWord.password,sqlWord.avatar,sqlWord.username]
     }else{
-        query = "update userlogin set password = '" + sqlWord.password + "' where username = '" + sqlWord.username + "'"
+        query = "update userlogin set password = ? where username = ?"
+        params = [sqlWord.password,sqlWord.username]
     }
-    connection.query(query,(err,data)=>{
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -35,7 +39,9 @@ function updateUser(sqlWord,callback){
 
 function applyCount(sqlWord,callback){
     let connection = mysql();
-    connection.query("insert into userapply(name,number,email) values('"+sqlWord.name+"','"+sqlWord.number+"','"+sqlWord.email+"')",(err,data)=>{
+    let query = "insert into userapply(name,number,email) values(?,?,?)";
+    let params = [sqlWord.name,sqlWord.number,sqlWord.email]
+    connection.query(query,(err,data)=>{
         if(err){
             callback(err)
         }else{ 
@@ -47,7 +53,8 @@ function applyCount(sqlWord,callback){
 
 function judgeLogin(sqlWord,callback){
     let connection = mysql();
-    connection.query("select * from session_tab where session_id = '" + sqlWord + "'",(err,data)=>{
+    let query = "select * from session_tab where session_id = ?";
+    connection.query(query,sqlWord,(err,data)=>{
         if(err){
             callback(err)
         }else{ 

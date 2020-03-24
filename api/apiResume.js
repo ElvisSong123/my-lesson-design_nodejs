@@ -2,9 +2,10 @@ let mysql = require('./index.js')
 function addPersonResume(sqlWord,callback){
     let connection = mysql();
     let query = '';
-    query ="insert into person_resume(operator,personinfo) values('"+ sqlWord.operator +"','"+sqlWord.data+"')"
+    let params = [sqlWord.operator,sqlWord.data]
+    query ="insert into person_resume(operator,personinfo) values(?,?)"
     
-    connection.query(query,(err,data)=>{
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -19,9 +20,9 @@ function addPersonResume(sqlWord,callback){
 function findPersonResume(sqlWord,callback){
     let connection = mysql();
     let query = '';
-    query ="select * from person_resume where operator = '" + sqlWord + "'"
+    query ="select * from person_resume where operator = ?"
     
-    connection.query(query,(err,data)=>{
+    connection.query(query,sqlWord,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -34,10 +35,9 @@ function findPersonResume(sqlWord,callback){
 
 function editPersonResume(sqlWord,callback){
     let connection = mysql();
-    let query = '';
-    query = "update person_resume set personinfo = '" + sqlWord.data + "' where operator = '" + sqlWord.operator + "'"
-    
-    connection.query(query,(err,data)=>{
+    let query = "update person_resume set personinfo = ? where operator = ?"
+    let params = [sqlWord.data,sqlWord.operator]
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -49,10 +49,9 @@ function editPersonResume(sqlWord,callback){
 }
 function addEducationInfo(sqlWord,callback){
     let connection = mysql();
-    let query = '';
-    query = "update person_resume set educationinfo = '" + sqlWord.data + "' where operator = '" + sqlWord.operator + "'"
-    
-    connection.query(query,(err,data)=>{
+    let query = "update person_resume set educationinfo = ? where operator = ?";
+    let params = [sqlWord.data,sqlWord.operator];
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -65,9 +64,9 @@ function addEducationInfo(sqlWord,callback){
 
 function addInternshipInfo(sqlWord,callback){
     let connection = mysql();
-    let query = '';
-    query = "update person_resume set internshipinfo = '" + sqlWord.data + "' where operator = '" + sqlWord.operator + "'"
-    connection.query(query,(err,data)=>{
+    let query = "update person_resume set internshipinfo = ? where operator = ?";
+    let params = [sqlWord.data,sqlWord.operator]
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -81,8 +80,9 @@ function addInternshipInfo(sqlWord,callback){
 function addProjectInfo(sqlWord,callback){
     let connection = mysql();
     let query = '';
-    query = "update person_resume set projectinfo = '" + sqlWord.data + "' where operator = '" + sqlWord.operator + "'"
-    connection.query(query,(err,data)=>{
+    query = "update person_resume set projectinfo = ? where operator = ?";
+    let params = [sqlWord.data,sqlWord.operator];
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -95,9 +95,9 @@ function addProjectInfo(sqlWord,callback){
 
 function addMajorInfo(sqlWord,callback){
     let connection = mysql();
-    let query = '';
-    query = "update person_resume set majorskill = '" + sqlWord.data + "' where operator = '" + sqlWord.operator + "'"
-    connection.query(query,(err,data)=>{
+    let query = "update person_resume set majorskill = ? where operator = ?";
+    let params = [sqlWord.data,sqlWord.operator];
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)
@@ -110,9 +110,9 @@ function addMajorInfo(sqlWord,callback){
 
 function addIntroduce(sqlWord,callback){
     let connection = mysql();
-    let query = '';
-    query = "update person_resume set introduce = '" + sqlWord.data + "' where operator = '" + sqlWord.operator + "'"
-    connection.query(query,(err,data)=>{
+    let query = "update person_resume set introduce = ? where operator = ?";
+    let params = [sqlWord.data,sqlWord.operator];
+    connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
             callback(err)

@@ -17,14 +17,17 @@ module.exports = (app, md5, upload,dirname) => {
     app.post('/login', (req, res) => {
         let queryCondition = req.body.username;
         let password = req.body.password;
+        let status = req.body.status;
         sqlFunc.findUser(queryCondition, (data) => {
+            console.log(data,'hahaha')
             if (data.length > 0) {
-                if (queryCondition == data[0].username && (getMd5(password) == judgePasswordLength(data[0].password))) {
+                if (queryCondition == data[0].username && status == data[0].status && (getMd5(password) == judgePasswordLength(data[0].password))) {
                     req.session.username = queryCondition;
                     res.send(JSON.stringify({
                         statusCode: 200,
                         status: data[0].status,
                         username: data[0].username,
+                        userid:data[0].user_id,
                         checkPass: true,
                         message: '登录成功',
                         cookie: req.sessionID,
@@ -34,7 +37,7 @@ module.exports = (app, md5, upload,dirname) => {
                     res.send(JSON.stringify({
                         statusCode: 200,
                         checkPass: false,
-                        message: '账号或密码错误'
+                        message: '信息输入有误，请您核对后重新登陆'
                     }))
                 }
 

@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-03-22 11:41:27
+ * @LastEditTime: 2020-03-24 21:35:04
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \毕业设计\server\server.js
+ */
 let express = require('express');
 let app = express();
 const cors = require('cors');
@@ -12,6 +20,8 @@ let url = require('url')
 let multer = require("multer");
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
+        let url1 = url.parse(req.url, true).query.username;
+        console.log(url1,'user')
         cb(null, './uploads');
     },
     filename: function(req, file, cb) {
@@ -22,9 +32,8 @@ let storage = multer.diskStorage({
 })
 let upload = multer({ storage: storage });
 app.use(express.static('dist'));
-//let cpUpload = upload.fields([{ name: 'imgfile', maxCount: 12 }])
-
-
+app.use(express.static('uploads'));
+app.use(express.static('companyImg'))
 
 const sqlConnect = mysql();
 let sessionStore = new MySQLStore({
