@@ -2,13 +2,27 @@ let sqlFunc = require('../api/apiCompany.js')
 let fs = require('fs');
 let url = require('url')
 
-let judgeDirExist = ()=>{
-    fs.readdir( './companyImg',function(err,files){
+/**
+ * @description: 判断目录是否存在
+ * @param {type} 
+ * @return: 
+ */
+let isExist = true;
+let judgeDirExist = (url)=>{
+    fs.readdirSync( './companyImg',function(err,files){
         if(!err){
-            return files
+            console.log(files,url)
+            if(!files.includes(url)){
+                isExist = false;
+            }
         }
     });
 }
+/**
+ * @description: 创建目录
+ * @param {type} 
+ * @return: 
+ */
 let makeDir = (url1)=>{
     fs.mkdir(`./companyImg/${url1}`,function(error){
         if(error){
@@ -21,13 +35,14 @@ let multer = require("multer");
 let storage = multer.diskStorage({
     destination: function(req, file, cb) {
         let url1 = url.parse(req.url, true).query.username;
-        judgeDirExist(url1) ? makeDir(url1) : '';
+        judgeDirExist(url1)
+        console.log(isExist)
+        makeDir(url1);//不存在则创建目录
         cb(null, `./companyImg/${url1}`);
     },
     filename: function(req, file, cb) {
        let url1 = url.parse(req.url, true).query.username
-        
-        cb(null, `${url1}-${file.originalname}`)
+       cb(null, `${url1}-${file.originalname}`)
     }
 })
 let upload = multer({ storage: storage });
@@ -107,49 +122,38 @@ module.exports = (app) => {
      */
     app.post('/sendCompanyImg', upload.array('imgfile', 40),async (req, res) => {
         let fileArr;
-        let userid = url.parse(req.url, true).query.username
+        let userid = url.parse(req.url, true).query.username;
+        let host = req.headers.host
         if(req.files || req.files.length > 0){
             fileArr = req.files.map((ele)=>{
                 return ele.filename
             })
         }
         console.log(fileArr,'woshishui')
+        console.log(123)
         await fs.readdir('./companyImg/' + userid, function (err, files) {
-            let filterFile=new Set(files.filter(x=>!fileArr.includes(x)));//取差集，删除操作
-            filterFile = [...filterFile]
-            filterFile.forEach((ele) => {
-                if(ele!=''){
-                    fs.unlink(`./companyImg/${userid}/`+ ele, (err) => {
-                        if (err) {
-                            console.log(err);
-                             
-                        } else {
-                            console.log('已经删除')
-                        }
-                    })
-                }
-                
-            })
-        })
-        let distImgFiles;
-        fs.readdir('./companyImg/' + userid,function(err, files){//更新图片目录后再次读取文件名，存入数据库。
-            if(!err){
-                distImgFiles=files;
-                sqlFunc.saveImgFileName([distImgFiles,userid],function(data){
-                    console.log(data);
-                    if(data.affectedRows){
-                        res.send({
-                            message:'保存成功'
-                        })
-                    }else{
-                        res.send({
-                            message:'保存失败'
+            if(files){
+                let filterFile=new Set(files.filter(x=>!fileArr.includes(x)));//取差集，删除操作
+                filterFile = [...filterFile]
+                filterFile.forEach((ele,index) => {
+                    if(ele!=''){
+                        fs.unlink(`./companyImg/${userid}/`+ ele, (err) => {
+                            if (err) {
+                                console.log(err);                      
+                            } else {
+                                console.log('已经删除');
+                                 
+                            }
                         })
                     }
-                })//保存图片文件到数据库
+                    
+                })
             }
+           
         })
-        
+        res.send({
+            message:'保存成功'
+        })
 
     })
 
@@ -157,7 +161,7 @@ module.exports = (app) => {
         let userid = url.parse(req.url, true).query.userid;
         let host = req.headers.host
         let imgArr = [];
-        fs.readdir('./companyImg/' + userid,function(err, files){//更新图片目录后再次读取文件名，存入数据库。
+        fs.readdir('./companyImg/' + userid,function(err, files){
             if(!err){ 
                 imgArr = files.map((ele)=>{
                     return `http://${host}/${userid}/${ele}`
@@ -166,4 +170,5 @@ module.exports = (app) => {
             }
         })
     })
+
 }

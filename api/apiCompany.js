@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-24 09:05:22
- * @LastEditTime: 2020-03-24 21:05:05
+ * @LastEditTime: 2020-03-25 13:53:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiCompany.js
@@ -40,7 +40,7 @@ function editCompanyInfo(sqlWord,callback){
 
 function getCompanyInfo(sqlWord,callback){
     let connection = mysql();
-    let query = "select * from company_info where operator_uuid = ?";
+    let query = "select company_infos,company_develop from company_info where operator_uuid = ?";
     connection.query(query,sqlWord,(err,data)=>{
         if(err){
             callback(err)
@@ -85,10 +85,45 @@ function saveImgFileName(sqlWord,callback){
     connection.end()
 
 }
+
+function addJobInfo(sqlWord,callback){
+    let connection = mysql();
+    
+    let query = "update company_info set job_infos = ? where operator_uuid = ?";
+    let uuid = JSON.parse(sqlWord).userid
+    let params = [sqlWord,uuid];
+    console.log(params)
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function getJobInfo(sqlWord,callback){
+    let connection = mysql();
+    
+    let query = "select job_infos from company_info where operator_uuid = ?";
+    let uuid = JSON.parse(sqlWord).userid;
+    connection.query(query,uuid,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
 module.exports = {
     addCompanyInfo,
     getCompanyInfo,
     editCompanyInfo,
     addCompanyDevelop,
-    saveImgFileName
+    saveImgFileName,
+    addJobInfo,
+    getJobInfo
 }
