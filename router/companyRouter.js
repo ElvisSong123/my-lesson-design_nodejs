@@ -36,13 +36,13 @@ let storage = multer.diskStorage({
     destination: function(req, file, cb) {
         let url1 = url.parse(req.url, true).query.username;
         judgeDirExist(url1)
-        console.log(isExist)
         makeDir(url1);//不存在则创建目录
         cb(null, `./companyImg/${url1}`);
     },
     filename: function(req, file, cb) {
        let url1 = url.parse(req.url, true).query.username
-       cb(null, `${url1}-${file.originalname}`)
+       let avatar = url.parse(req.url, true).query.avatar;
+       avatar ? cb(null, `${avatar}-${url1}-${file.originalname}`) : cb(null, `${url1}-${file.originalname}`);
     }
 })
 let upload = multer({ storage: storage });
@@ -130,33 +130,58 @@ module.exports = (app) => {
             })
         }
         console.log(fileArr,'woshishui')
-        console.log(123)
-        await fs.readdir('./companyImg/' + userid, function (err, files) {
-            if(files){
-                let filterFile=new Set(files.filter(x=>!fileArr.includes(x)));//取差集，删除操作
-                filterFile = [...filterFile]
-                filterFile.forEach((ele,index) => {
-                    if(ele!=''){
-                        fs.unlink(`./companyImg/${userid}/`+ ele, (err) => {
-                            if (err) {
-                                console.log(err);                      
-                            } else {
-                                console.log('已经删除');
-                                 
-                            }
-                        })
+        console.log(123);
+        if(fileArr.length == 1 && fileArr[0].indexOf('avatar') == 0){//上传企业头像的情况
+            await fs.readdir('./companyImg/' + userid, function (err, files) {
+                if(files){
+                    let filterFile=files.filter(x=>x.includes('avatar-')&&!x.includes(fileArr[0]));//取差集，删除操作
+                    console.log(filterFile,'xixixixi')
+                    if(filterFile.length!=0){
+                            fs.unlink(`./companyImg/${userid}/`+ filterFile[0], (err) => {
+                                if (err) {
+                                    console.log(err);                      
+                                } else {
+                                    console.log('已经删除');           
+                                }
+                            })
+                        }               
                     }
-                    
-                })
-            }
-           
-        })
+               
+            })
+        }else{
+            await fs.readdir('./companyImg/' + userid, function (err, files) {//上传企业文化照片
+                if(files){
+                    let filterFile=new Set(files.filter(x=>!fileArr.includes(x)&&x.indexOf('avatar')==-1));//取差集，删除操作
+                    filterFile = [...filterFile]
+                    filterFile.forEach((ele,index) => {
+                        if(ele!=''){
+                            fs.unlink(`./companyImg/${userid}/`+ ele, (err) => {
+                                if (err) {
+                                    console.log(err);                      
+                                } else {
+                                    console.log('已经删除');
+                                     
+                                }
+                            })
+                        }
+                        
+                    })
+                }
+               
+            })
+        }
+        
         res.send({
             message:'保存成功'
         })
 
     })
 
+    /**
+     * @description: 获取企业文化图片
+     * @param {type} 
+     * @return: 
+     */
     app.post('/getCompanyImg',(req,res)=>{
         let userid = url.parse(req.url, true).query.userid;
         let host = req.headers.host
@@ -170,5 +195,6 @@ module.exports = (app) => {
             }
         })
     })
+
 
 }
