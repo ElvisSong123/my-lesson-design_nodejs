@@ -1,8 +1,9 @@
 let sqlFunc = require('../api/apiLoginRegister.js')
 let fs = require('fs');
 let url = require('url')
+let sendEmail = require('../utils/sendEmail.js')
 
-module.exports = (app, md5, upload,dirname) => {
+module.exports = (app, md5, upload, dirname) => {
     getMd5 = (password) => {
         return md5(md5(password))
     }
@@ -19,7 +20,7 @@ module.exports = (app, md5, upload,dirname) => {
         let password = req.body.password;
         let status = req.body.status;
         sqlFunc.findUser(queryCondition, (data) => {
-            console.log(data,'hahaha')
+            console.log(data, 'hahaha')
             if (data.length > 0) {
                 if (queryCondition == data[0].username && status == data[0].status && (getMd5(password) == judgePasswordLength(data[0].password))) {
                     req.session.username = queryCondition;
@@ -27,7 +28,7 @@ module.exports = (app, md5, upload,dirname) => {
                         statusCode: 200,
                         status: data[0].status,
                         username: data[0].username,
-                        userid:data[0].user_id,
+                        userid: data[0].user_id,
                         checkPass: true,
                         message: '登录成功',
                         cookie: req.sessionID,
@@ -57,54 +58,54 @@ module.exports = (app, md5, upload,dirname) => {
         let queryCondition = {
             username: req.body.username,
             password: md5(md5(req.body.password)),
-            avatar:req.files[0]&&req.files[0].filename? req.files[0].filename : ''
+            avatar: req.files[0] && req.files[0].filename ? req.files[0].filename : ''
         };
 
-        let operationUser = new Promise((resolve,reject)=>{
+        let operationUser = new Promise((resolve, reject) => {
             sqlFunc.updateUser(queryCondition, (data) => {
                 if (data && data.affectedRows != 0) {
                     resolve(res)
                 } else {
-                   reject(res)
+                    reject(res)
                 }
             });
-        }).then((res)=>{
+        }).then((res) => {
             res.send(JSON.stringify({
                 statusCode: 200,
                 updated: true,
                 message: '修改成功,请重新登录'
             }));
-        },(rej)=>{
+        }, (rej) => {
             rej.send(JSON.stringify({
                 statusCode: 200,
                 updated: false,
                 message: '密码重复'
             }))
-        }).then(()=>{
-            return new Promise((resolve,reject)=>{
+        }).then(() => {
+            return new Promise((resolve, reject) => {
                 sqlFunc.findUser(queryCondition.username, (data) => {
                     if (data.length) {
                         let avatar = data[0].avatar;
                         if (avatar) {
-                        fs.readdir('./uploads/', function (err, files) {
-                                let filterFile = files.filter((ele)=>{
+                            fs.readdir('./uploads/', function (err, files) {
+                                let filterFile = files.filter((ele) => {
                                     return ele.indexOf(queryCondition.username) == 0 && ele != avatar;
-        
+
                                 })
                                 filterFile.forEach((ele) => {
-                                    if(ele!=''){
-                                        fs.unlink('./uploads/'+ ele, (err) => {
+                                    if (ele != '') {
+                                        fs.unlink('./uploads/' + ele, (err) => {
                                             if (err) {
                                                 console.log(err);
                                                 res.send({
-                                                    message:'服务器错误，头像上传失败'
+                                                    message: '服务器错误，头像上传失败'
                                                 })
                                             } else {
                                                 console.log('已经删除')
                                             }
                                         })
                                     }
-                                    
+
                                 })
                             });
                         }
@@ -112,10 +113,10 @@ module.exports = (app, md5, upload,dirname) => {
                 })
             })
         })
-        
-        
-       
-      
+
+
+
+
 
 
     })
@@ -134,13 +135,15 @@ module.exports = (app, md5, upload,dirname) => {
 
     })
 
-    app.post('/applyCount', (req, res) => {
+    app.post('/applyCount', async (req, res) => {
         let queryCondition = {
+            status: req.body.status,
             name: req.body.name,
             number: req.body.number,
             email: req.body.email
         };
-        sqlFunc.applyCount(queryCondition, (data) => {
+        await sqlFunc.applyCount(queryCondition, (data) => {
+            console.log(222)
             if (!data.errno) {
                 res.send(JSON.stringify({
                     statusCode: 200,
@@ -151,13 +154,92 @@ module.exports = (app, md5, upload,dirname) => {
                 res.send(JSON.stringify({
                     statusCode: 200,
                     updated: false,
-                    message: data.errno == 1062 ? '申请失败，学号重复' : '申请失败，服务器失联'
+                    message: data.errno == 1062 ? '申请失败，学号/学工号已被注册,请直接登录' : '申请失败，服务器失联'
                 }))
             }
         });
-
-
     })
+
+    app.post('/getapplyCount', (req, res) => {
+        sqlFunc.getapplyCount([], (data) => {
+            if (data) {
+                res.send({
+                    status: 200,
+                    data
+                })
+            } else {
+                res.send({
+                    status: 500,
+                    message: '服务器报错'
+                })
+            }
+        });
+    })
+
+    app.post('/getAllUser', (req, res) => {
+        sqlFunc.getAllUser([], (data) => {
+            if (data) {
+                res.send({
+                    status: 200,
+                    data
+                })
+            } else {
+                res.send({
+                    status: 500,
+                    message: '服务器报错'
+                })
+            }
+        });
+    })
+
+    app.post('/addUserApply', (req, res) => {
+        let queryCondition = {
+            ...req.body
+        };
+        let account;
+        if (req.body.status == '学生') {
+            account = '学号'
+        } else if (req.body.status = '老师') {
+            account = '职工号'
+        } else {
+            account = '电话'
+        }
+        sqlFunc.addUserApply(queryCondition, (data) => {
+            console.log(data)
+            if (data) {
+                sqlFunc.delapplyCount(req.body.number, () => {});
+                sendEmail(req.body.email, `${req.body.name},你好！国际学院毕业生就业信息管理系统的账户和密码已经重置为您的${account},登陆后请及时修改密码`)
+                res.send({
+                    status: 200,
+                })
+            } else {
+                res.send({
+                    status: 500,
+                    message: '服务器报错'
+                })
+            }
+        });
+    })
+
+    app.post('/delUserApply', (req, res) => {
+        let queryCondition = {
+            ...req.body
+        };
+        sqlFunc.delapplyCount(req.body.number, (data) => {
+            if (data) {
+                res.send({
+                    status: 200,
+                })
+            } else {
+                res.send({
+                    status: 500,
+                    message: '服务器报错'
+                })
+            }
+        })
+    })
+
+
 
     app.post('/judgeLogin', (req, res) => {
         let queryCondition = req.body.session;

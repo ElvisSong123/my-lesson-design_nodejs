@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-03-22 11:41:27
+ * @LastEditTime: 2020-03-26 17:33:51
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \毕业设计\server\api\apiLoginRegister.js
+ */
 let mysql = require('./index.js')
 function findUser(sqlWord,callback){
     let connection = mysql();
@@ -39,8 +47,21 @@ function updateUser(sqlWord,callback){
 
 function applyCount(sqlWord,callback){
     let connection = mysql();
-    let query = "insert into userapply(name,number,email) values(?,?,?)";
-    let params = [sqlWord.name,sqlWord.number,sqlWord.email]
+    let query = "insert into userapply(name,number,email,status) values(?,?,?,?)";
+    let params = [sqlWord.name,sqlWord.number,sqlWord.email,sqlWord.status]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function getapplyCount(sqlWord,callback){
+    let connection = mysql();
+    let query = "select * from userapply";
     connection.query(query,(err,data)=>{
         if(err){
             callback(err)
@@ -50,6 +71,47 @@ function applyCount(sqlWord,callback){
     })
     connection.end()
 }
+
+function delapplyCount(sqlWord,callback){
+    let connection = mysql();
+    let query = "delete from userapply where number = ?";
+    connection.query(query,sqlWord,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function getAllUser(sqlWord,callback){
+    let connection = mysql();
+    let query = "select username,status,user_id,email from userlogin";
+    connection.query(query,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function addUserApply(sqlWord,callback){
+    let connection = mysql();
+    let query = "insert into userlogin(username,password,status,user_id,email) values(?,?,?,?,?)";
+    let params = [sqlWord.name,sqlWord.number,sqlWord.status,sqlWord.number,sqlWord.email]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
 
 function judgeLogin(sqlWord,callback){
     let connection = mysql();
@@ -76,17 +138,7 @@ function signOutLogin(sqlWord,callback){
     connection.end()
 }
 
-// function uploadAvatar(sqlWord,callback){
-//     let connection = mysql();
-//     connection.query("insert into userlogin(avatar) values('"+ sqlWord +"') ",(err,data)=>{
-//         if(err){
-//             callback(err)
-//         }else{ 
-//             callback(data)
-//         }
-//     })
-//     connection.end()
-// }
+
 
 module.exports = {
     findUser,
@@ -94,4 +146,8 @@ module.exports = {
     applyCount,
     judgeLogin,
     signOutLogin,
+    getapplyCount,
+    getAllUser,
+    addUserApply,
+    delapplyCount
 }
