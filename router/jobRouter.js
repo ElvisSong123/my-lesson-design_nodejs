@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-25 14:09:44
- * @LastEditTime: 2020-03-25 22:40:14
+ * @LastEditTime: 2020-03-26 23:18:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\router\jobRouter.js
@@ -21,7 +21,6 @@ module.exports = (app) => {
                     message: '保存成功'
                 }));
             }else{
-                console.log(data)
                 res.send(JSON.stringify({
                     statusCode: 500,
                     message: '服务器错误'
@@ -38,7 +37,6 @@ module.exports = (app) => {
                     data
                 }));
             }else{
-                console.log(data)
                 res.send(JSON.stringify({
                     statusCode: 500,
                     message: '服务器错误'
@@ -55,7 +53,6 @@ module.exports = (app) => {
                     statusCode:200
                 });
             }else{
-                console.log(data)
                 res.send(JSON.stringify({
                     statusCode: 500,
                     message: '服务器错误'
@@ -66,14 +63,12 @@ module.exports = (app) => {
 
     app.post('/editJobInfo',(req,res)=>{
         let {jobId,...reset} = req.body.data;
-        console.log(jobId,reset)
         sqlFunc.editJobInfo([JSON.stringify(reset),jobId],(data)=>{
             if(data){
                 res.send({
                     statusCode:200
                 });
             }else{
-                console.log(data)
                 res.send(JSON.stringify({
                     statusCode: 500,
                     message: '服务器错误'
@@ -83,10 +78,8 @@ module.exports = (app) => {
     })
 
     app.post('/getJobInfoByPage',(req,res)=>{ 
-        console.log(req.body)
         let {nowPage,pageCount} = req.body.data;
         nowPage = (nowPage - 1) * pageCount;
-        console.log(nowPage,pageCount)
         sqlFunc.getJobInfoByPage([nowPage,pageCount],(data)=>{
             if(data){
                 res.send({
@@ -103,8 +96,27 @@ module.exports = (app) => {
         })
     })
 
-    app.post('/getJobDataCount',(req,res)=>{ 
-        sqlFunc.getJobDataCount([],(data)=>{
+    app.post('/getJobDataCount',(req,res)=>{
+        console.log(req.body)
+        sqlFunc.getJobDataCount(req.body.data,(data)=>{
+            if(data){
+                res.send({
+                    statusCode:200,
+                    data
+                });
+            }else{
+                console.log(data)
+                res.send(JSON.stringify({
+                    statusCode: 500,
+                    message: '服务器错误'
+                }));
+            }
+        })
+    })
+
+    app.post('/searchJobInfo',(req,res)=>{ 
+        req.body.nowPage = (req.body.nowPage - 1) * req.body.pageCount;
+        sqlFunc.searchJobInfo(req.body,(data)=>{
             if(data){
                 res.send({
                     statusCode:200,
