@@ -134,6 +134,20 @@ module.exports = (app, md5, upload, dirname) => {
 
     })
 
+    app.post('/getUserAvatar', function (req, res) {
+        const userid = req.body.userid;
+        let host = req.headers.host
+        console.log(req.body,'avatar')
+        fs.readdir(`${dirname}/uploads/`,(err,files)=>{
+           let res1 = files.filter((ele)=>{ 
+                  return  ele.indexOf(userid) == 0
+            })
+            res.send(`http://${host}/${res1[0]}`)
+        })
+    })
+
+    
+
     app.post('/applyCount', async (req, res) => {
         let queryCondition = {
             status: req.body.status,
