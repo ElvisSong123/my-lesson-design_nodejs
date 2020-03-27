@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-27 13:14:41
- * @LastEditTime: 2020-03-27 16:11:05
+ * @LastEditTime: 2020-03-27 20:05:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiDeliverResume.js
@@ -17,7 +17,7 @@
 let mysql = require('./index.js');  
 function addDeliverResume(sqlWord,callback){
     let connection = mysql();  
-    let query = "insert into deliver_resume(company_id,job_id,deliver_address,deliver_jobname,user_id,resume_data) values(?,?,?,?,?,?)";
+    let query = "insert into deliver_resume(company_id,job_id,deliver_address,deliver_jobname,user_id,resume_data,deliver_state) values(?,?,?,?,?,?,?)";
     connection.query(query,sqlWord,(err,data)=>{
         if(err){
             callback(err);
@@ -74,6 +74,22 @@ function searchCandidateCount(sqlWord,callback){
     connection.end()
 }
 
+function changeCandidateState(sqlWord,callback){
+    let connection = mysql();
+    console.log(sqlWord)
+    let query = "update deliver_resume set deliver_state = ? where job_id = ? and user_id = ?";
+    let params = [sqlWord.state,sqlWord.jobId,sqlWord.userId]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            console.log(err)
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
 
 
 
@@ -81,6 +97,7 @@ module.exports = {
     addDeliverResume,
     getDeliverResume,
     searchCandidateInfo,
-    searchCandidateCount
+    searchCandidateCount,
+    changeCandidateState
 }
 
