@@ -7,9 +7,10 @@ module.exports = (app, md5, upload) => {
         const username = req.body
         let sqlWord = {
             operator:req.body.operator,
+            user_id:req.body.user_id,
             data: JSON.stringify(req.body) 
         }
-
+        console.log(sqlWord.user_id,'songbiao')
         sqlFunc.addPersonResume(sqlWord,(data)=>{ 
             if(data.affectedRows){
                 res.send(JSON.stringify({
@@ -27,10 +28,7 @@ module.exports = (app, md5, upload) => {
     })
 
     app.post('/getResumeData', function (req, res) {
-       
-        let sqlWord = req.body.operator;
-    
-
+        let sqlWord = req.body.userid;
         sqlFunc.findPersonResume(sqlWord,(data)=>{
             if(data.length){
                 res.send(JSON.stringify({

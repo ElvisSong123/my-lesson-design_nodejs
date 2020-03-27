@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-22 11:41:27
- * @LastEditTime: 2020-03-26 17:33:51
+ * @LastEditTime: 2020-03-27 11:37:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiLoginRegister.js
@@ -9,7 +9,7 @@
 let mysql = require('./index.js')
 function findUser(sqlWord,callback){
     let connection = mysql();
-    let query = "select * from userlogin where username = ?;"
+    let query = "select * from userlogin where user_id = ?;"
     connection.query(query,sqlWord,(err,data)=>{
         if(err){
             console.log(err)
@@ -28,10 +28,10 @@ function updateUser(sqlWord,callback){
     let query = '';
     let params;
     if(sqlWord.avatar){
-        query = "update userlogin set password = ?, avatar = ? where username = ?"
+        query = "update userlogin set password = ?, avatar = ? where user_id = ?"
         params = [sqlWord.password,sqlWord.avatar,sqlWord.username]
     }else{
-        query = "update userlogin set password = ? where username = ?"
+        query = "update userlogin set password = ? where user_id = ?"
         params = [sqlWord.password,sqlWord.username]
     }
     connection.query(query,params,(err,data)=>{

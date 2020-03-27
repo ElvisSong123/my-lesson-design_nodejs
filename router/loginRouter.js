@@ -19,10 +19,9 @@ module.exports = (app, md5, upload, dirname) => {
         let queryCondition = req.body.username;
         let password = req.body.password;
         let status = req.body.status;
-        sqlFunc.findUser(queryCondition, (data) => {
-            console.log(data, 'hahaha')
+        sqlFunc.findUser(queryCondition, (data) => { 
             if (data.length > 0) {
-                if (queryCondition == data[0].username && status == data[0].status && (getMd5(password) == judgePasswordLength(data[0].password))) {
+                if (queryCondition == data[0].user_id && status == data[0].status && (getMd5(password) == judgePasswordLength(data[0].password))) {
                     req.session.username = queryCondition;
                     res.send(JSON.stringify({
                         statusCode: 200,
@@ -82,7 +81,7 @@ module.exports = (app, md5, upload, dirname) => {
                 message: '密码重复'
             }))
         }).then(() => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {//删除重复头像
                 sqlFunc.findUser(queryCondition.username, (data) => {
                     if (data.length) {
                         let avatar = data[0].avatar;
@@ -142,22 +141,43 @@ module.exports = (app, md5, upload, dirname) => {
             number: req.body.number,
             email: req.body.email
         };
-        await sqlFunc.applyCount(queryCondition, (data) => {
-            console.log(222)
-            if (!data.errno) {
-                res.send(JSON.stringify({
-                    statusCode: 200,
-                    updated: true,
-                    message: '申请成功，请等待管理员审核'
-                }));
+        let isRegister;
+        await sqlFunc.getAllUser([], (data) => {
+            if (data) {
+                for(let prop in data){
+                    if(data[prop].user_id == queryCondition.number){
+                        res.send({
+                            statusCode: 200,
+                            updated: false,
+                            message: '申请失败，学号/学工号已被注册,请直接登录'
+                        })
+                        return false;
+                    }
+                }
+                sqlFunc.applyCount(queryCondition, (data) => {
+                    if (!data.errno) {
+                        res.send(JSON.stringify({
+                            statusCode: 200,
+                            updated: true,
+                            message: '申请成功，请等待管理员审核'
+                        }));
+                    } else {
+                        res.send(JSON.stringify({
+                            statusCode: 200,
+                            updated: false,
+                            message: data.errno == 1062 ? '申请失败，学号/学工号已被注册,请直接登录' : '申请失败，服务器失联'
+                        }))
+                    }
+                });
             } else {
                 res.send(JSON.stringify({
-                    statusCode: 200,
+                    statusCode: 500,
                     updated: false,
-                    message: data.errno == 1062 ? '申请失败，学号/学工号已被注册,请直接登录' : '申请失败，服务器失联'
+                    message: '申请失败，服务器失联'
                 }))
             }
         });
+       
     })
 
     app.post('/getapplyCount', (req, res) => {
@@ -205,7 +225,7 @@ module.exports = (app, md5, upload, dirname) => {
             account = '电话'
         }
         sqlFunc.addUserApply(queryCondition, (data) => {
-            console.log(data)
+           
             if (data) {
                 sqlFunc.delapplyCount(req.body.number, () => {});
                 sendEmail(req.body.email, `${req.body.name},你好！国际学院毕业生就业信息管理系统的账户和密码已经重置为您的${account},登陆后请及时修改密码`)

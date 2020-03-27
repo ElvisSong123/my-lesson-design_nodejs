@@ -2,9 +2,8 @@ let mysql = require('./index.js')
 function addPersonResume(sqlWord,callback){
     let connection = mysql();
     let query = '';
-    let params = [sqlWord.operator,sqlWord.data]
-    query ="insert into person_resume(operator,personinfo) values(?,?)"
-    
+    let params = [sqlWord.operator,sqlWord.data,sqlWord.user_id]
+    query ="insert into person_resume(operator,personinfo,userid) values(?,?,?)"
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -20,7 +19,7 @@ function addPersonResume(sqlWord,callback){
 function findPersonResume(sqlWord,callback){
     let connection = mysql();
     let query = '';
-    query ="select * from person_resume where operator = ?"
+    query ="select * from person_resume where userid = ?"
     
     connection.query(query,sqlWord,(err,data)=>{
         if(err){
