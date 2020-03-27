@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-27 13:15:14
- * @LastEditTime: 2020-03-27 14:10:17
+ * @LastEditTime: 2020-03-27 16:05:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\router\deliverResumeRouter.js
@@ -32,6 +32,39 @@ module.exports = (app) => {
     app.post('/getDeliverResume',(req,res)=>{ 
         const userid = req.body.userid;
         sqlFunc.getDeliverResume(userid,(data)=>{
+            if(data){
+                res.send(JSON.stringify({
+                    statusCode: 200,
+                    data
+                }));
+            }else{
+                res.send(JSON.stringify({
+                    statusCode: 500,
+                    message: '服务器错误'
+                }));
+            }
+        })
+    })
+
+    app.post('/searchCandidateInfo',(req,res)=>{
+        req.body.nowPage = (req.body.nowPage - 1) * req.body.pageCount;
+        sqlFunc.searchCandidateInfo(req.body,(data)=>{
+            if(data){
+                res.send(JSON.stringify({
+                    statusCode: 200,
+                    data
+                }));
+            }else{
+                res.send(JSON.stringify({
+                    statusCode: 500,
+                    message: '服务器错误'
+                }));
+            }
+        })
+    })
+
+    app.post('/searchCandidateCount',(req,res)=>{
+        sqlFunc.searchCandidateCount(req.body,(data)=>{
             if(data){
                 res.send(JSON.stringify({
                     statusCode: 200,

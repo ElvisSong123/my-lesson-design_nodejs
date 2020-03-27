@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-27 13:14:41
- * @LastEditTime: 2020-03-27 14:13:27
+ * @LastEditTime: 2020-03-27 16:11:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiDeliverResume.js
@@ -43,12 +43,44 @@ function getDeliverResume(sqlWord,callback){
     connection.end()
 }
 
+function searchCandidateInfo(sqlWord,callback){
+    let connection = mysql();
+    let query = "select * from deliver_resume where company_id = ? and (deliver_address = ?  or ? = '') and (deliver_jobname = ? or ? = '')  limit ?,?";
+    let params = [sqlWord.userid,sqlWord.place,sqlWord.place,sqlWord.jobName,sqlWord.jobName,sqlWord.nowPage,sqlWord.pageCount]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            console.log(err)
+            callback(err)
+        }else{  
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function searchCandidateCount(sqlWord,callback){
+    let connection = mysql();
+    console.log(sqlWord)
+    let query = "select count(1) from deliver_resume where company_id = ? and (deliver_address = ?  or ? = '') and (deliver_jobname = ? or ? = '')";
+    let params = [sqlWord.userid,sqlWord.place,sqlWord.place,sqlWord.jobName,sqlWord.jobName]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            console.log(err)
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
 
 
 
 
 module.exports = {
     addDeliverResume,
-    getDeliverResume
+    getDeliverResume,
+    searchCandidateInfo,
+    searchCandidateCount
 }
 
