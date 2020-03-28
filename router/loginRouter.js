@@ -140,9 +140,13 @@ module.exports = (app, md5, upload, dirname) => {
         console.log(req.body,'avatar')
         fs.readdir(`${dirname}/uploads/`,(err,files)=>{
            let res1 = files.filter((ele)=>{ 
-                  return  ele.indexOf(userid) == 0
+                  return  userid && ele.indexOf(userid) == 0
             })
-            res.send(`http://${host}/${res1[0]}`)
+            if(res1.length){
+                res.send(`http://${host}/${res1[0]}`)
+            }else{
+                res.send(``)
+            }
         })
     })
 

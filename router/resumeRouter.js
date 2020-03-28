@@ -29,6 +29,7 @@ module.exports = (app, md5, upload) => {
 
     app.post('/getResumeData', function (req, res) {
         let sqlWord = req.body.userid;
+        console.log(sqlWord,'songbiaoo')
         sqlFunc.findPersonResume(sqlWord,(data)=>{
             if(data.length){
                 res.send(JSON.stringify({
