@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-28 11:35:19
- * @LastEditTime: 2020-03-28 20:53:31
+ * @LastEditTime: 2020-03-28 22:25:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiEntryJob.js
@@ -78,6 +78,37 @@ function delEntryJob(sqlWord,callback){
     connection.end()
 }
 
+function getEntryStudentByPage(sqlWord,callback){
+    let connection = mysql();
+    let query = "select * from entry_job where (sex = ?  or ? = '') and (major = ? or ? = '') limit ?,?";
+    let params = [sqlWord.sex,sqlWord.sex,sqlWord.major,sqlWord.major,sqlWord.nowPage,sqlWord.pageCount]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            console.log(err)
+            callback(err)
+        }else{ 
+            console.log(data)
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function getEntryStudentCount(sqlWord,callback){
+    let connection = mysql();
+    let query = "select count(1) from entry_job where (sex = ?  or ? = '') and (major = ? or ? = '')";
+    let params = [sqlWord.sex,sqlWord.sex,sqlWord.major,sqlWord.major]
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            console.log(err)
+            callback(err)
+        }else{ 
+            console.log(data)
+            callback(data)
+        }
+    })
+    connection.end()
+}
 
 
 module.exports = {
@@ -85,6 +116,8 @@ module.exports = {
     getEnetryJob,
     getEnetryJobByCompanyId,
     updateEntryJob,
-    delEntryJob
+    delEntryJob,
+    getEntryStudentByPage,
+    getEntryStudentCount
 }
 

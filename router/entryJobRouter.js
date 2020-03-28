@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-28 11:35:35
- * @LastEditTime: 2020-03-28 20:53:00
+ * @LastEditTime: 2020-03-28 21:44:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\router\entryJobRouter.js
@@ -120,6 +120,40 @@ module.exports = (app) => {
             }
         })
     })
+
+    app.post('/getEntryStudentByPage', (req, res) => {
+        req.body.nowPage = (req.body.nowPage - 1) * req.body.pageCount;
+        sqlFunc.getEntryStudentByPage(req.body, (data) => {
+            if (data) {
+                res.send(JSON.stringify({
+                    statusCode: 200,
+                    data
+                }));
+            } else {
+                res.send(JSON.stringify({
+                    statusCode: 500,
+                    message: '服务器错误'
+                }));
+            }
+        })
+    })
+
+    app.post('/getEntryStudentCount', (req, res) => { 
+        sqlFunc.getEntryStudentCount(req.body, (data) => {
+            if (data) {
+                res.send(JSON.stringify({
+                    statusCode: 200,
+                    data
+                }));
+            } else {
+                res.send(JSON.stringify({
+                    statusCode: 500,
+                    message: '服务器错误'
+                }));
+            }
+        })
+    })
+
 
 
 }
