@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-22 11:41:27
- * @LastEditTime: 2020-03-27 11:37:53
+ * @LastEditTime: 2020-03-28 22:50:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiLoginRegister.js
@@ -138,6 +138,17 @@ function signOutLogin(sqlWord,callback){
     connection.end()
 }
 
+function getAllStudentCount(sqlWord,callback){
+    let connection = mysql();
+    connection.query("select count(1) from userlogin where status = '学生'",(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
 
 
 module.exports = {
@@ -149,5 +160,6 @@ module.exports = {
     getapplyCount,
     getAllUser,
     addUserApply,
-    delapplyCount
+    delapplyCount,
+    getAllStudentCount
 }
