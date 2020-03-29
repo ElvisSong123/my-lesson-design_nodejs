@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-26 20:06:07
- * @LastEditTime: 2020-03-26 20:46:18
+ * @LastEditTime: 2020-03-29 14:47:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\utils\sendEmail.js
@@ -18,12 +18,12 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-let sendEmail = (email,text)=>{
+let sendEmail = (title,email,text)=>{
     console.log(email,text)
     let mailOptions= {
         from: '"test" <2889250797@qq.com>', // 你到qq邮箱地址
         to: email, // 接受人,可以群发填写多个逗号分隔
-        subject: '账号申请成功', // 主题名(邮件名)
+        subject: title, // 主题名(邮件名)
         // 可以发送text或者html格式,2选1
         // text: 'Hello world?', // 纯文本
         html: `<b>${text}</b>` // html

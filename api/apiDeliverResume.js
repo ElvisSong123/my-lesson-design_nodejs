@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-27 13:14:41
- * @LastEditTime: 2020-03-28 12:18:24
+ * @LastEditTime: 2020-03-29 14:12:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiDeliverResume.js
@@ -76,7 +76,6 @@ function searchCandidateCount(sqlWord,callback){
 
 function changeCandidateState(sqlWord,callback){
     let connection = mysql();
-    console.log(sqlWord)
     let query = "update deliver_resume set deliver_state = ? where job_id = ? and user_id = ?";
     let params = [sqlWord.state,sqlWord.jobId,sqlWord.userId]
     connection.query(query,params,(err,data)=>{

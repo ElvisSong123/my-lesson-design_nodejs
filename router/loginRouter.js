@@ -246,7 +246,7 @@ module.exports = (app, md5, upload, dirname) => {
            
             if (data) {
                 sqlFunc.delapplyCount(req.body.number, () => {});
-                sendEmail(req.body.email, `${req.body.name},你好！国际学院毕业生就业信息管理系统的账户和密码已经重置为您的${account},登陆后请及时修改密码`)
+                sendEmail('账号申请成功',req.body.email, `${req.body.name},你好！国际学院毕业生就业信息管理系统的账户和密码已经重置为您的${account},登陆后请及时修改密码`)
                 res.send({
                     status: 200,
                 })
