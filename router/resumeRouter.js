@@ -50,7 +50,7 @@ module.exports = (app, md5, upload) => {
     app.post('/editPersonData', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
 
@@ -74,7 +74,7 @@ module.exports = (app, md5, upload) => {
     app.post('/addEducationInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -98,7 +98,7 @@ module.exports = (app, md5, upload) => {
     app.post('/eidtEducationInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -123,7 +123,7 @@ module.exports = (app, md5, upload) => {
     app.post('/addInternshipInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -147,7 +147,7 @@ module.exports = (app, md5, upload) => {
     app.post('/editInternshipInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -173,7 +173,7 @@ module.exports = (app, md5, upload) => {
     app.post('/addProjectInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -197,7 +197,7 @@ module.exports = (app, md5, upload) => {
     app.post('/editProjectInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -222,7 +222,7 @@ module.exports = (app, md5, upload) => {
     app.post('/addMajorInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -245,7 +245,7 @@ module.exports = (app, md5, upload) => {
     app.post('/editMajorInfo', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -269,7 +269,7 @@ module.exports = (app, md5, upload) => {
     app.post('/addIntroduce', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)
@@ -292,7 +292,7 @@ module.exports = (app, md5, upload) => {
     app.post('/editIntroduce', function (req, res) {
        
         let sqlWord = {
-            operator:req.body.operator,
+            userid:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord)

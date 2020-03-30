@@ -34,8 +34,8 @@ function findPersonResume(sqlWord,callback){
 
 function editPersonResume(sqlWord,callback){
     let connection = mysql();
-    let query = "update person_resume set personinfo = ? where operator = ?"
-    let params = [sqlWord.data,sqlWord.operator]
+    let query = "update person_resume set personinfo = ? where userid = ?"
+    let params = [sqlWord.data,sqlWord.userid]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -48,8 +48,8 @@ function editPersonResume(sqlWord,callback){
 }
 function addEducationInfo(sqlWord,callback){
     let connection = mysql();
-    let query = "update person_resume set educationinfo = ? where operator = ?";
-    let params = [sqlWord.data,sqlWord.operator];
+    let query = "update person_resume set educationinfo = ? where userid = ?";
+    let params = [sqlWord.data,sqlWord.userid];
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -63,8 +63,8 @@ function addEducationInfo(sqlWord,callback){
 
 function addInternshipInfo(sqlWord,callback){
     let connection = mysql();
-    let query = "update person_resume set internshipinfo = ? where operator = ?";
-    let params = [sqlWord.data,sqlWord.operator]
+    let query = "update person_resume set internshipinfo = ? where userid = ?";
+    let params = [sqlWord.data,sqlWord.userid]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -79,8 +79,8 @@ function addInternshipInfo(sqlWord,callback){
 function addProjectInfo(sqlWord,callback){
     let connection = mysql();
     let query = '';
-    query = "update person_resume set projectinfo = ? where operator = ?";
-    let params = [sqlWord.data,sqlWord.operator];
+    query = "update person_resume set projectinfo = ? where userid = ?";
+    let params = [sqlWord.data,sqlWord.userid];
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -94,8 +94,8 @@ function addProjectInfo(sqlWord,callback){
 
 function addMajorInfo(sqlWord,callback){
     let connection = mysql();
-    let query = "update person_resume set majorskill = ? where operator = ?";
-    let params = [sqlWord.data,sqlWord.operator];
+    let query = "update person_resume set majorskill = ? where userid = ?";
+    let params = [sqlWord.data,sqlWord.userid];
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -109,8 +109,8 @@ function addMajorInfo(sqlWord,callback){
 
 function addIntroduce(sqlWord,callback){
     let connection = mysql();
-    let query = "update person_resume set introduce = ? where operator = ?";
-    let params = [sqlWord.data,sqlWord.operator];
+    let query = "update person_resume set introduce = ? where userid = ?";
+    let params = [sqlWord.data,sqlWord.userid];
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)

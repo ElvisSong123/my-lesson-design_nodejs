@@ -237,7 +237,7 @@ module.exports = (app, md5, upload, dirname) => {
         let account;
         if (req.body.status == '学生') {
             account = '学号'
-        } else if (req.body.status = '老师') {
+        } else if (req.body.status == '老师') {
             account = '职工号'
         } else {
             account = '电话'
