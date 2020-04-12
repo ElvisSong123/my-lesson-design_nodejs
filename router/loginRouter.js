@@ -21,7 +21,7 @@ module.exports = (app, md5, upload, dirname) => {
         let status = req.body.status;
         sqlFunc.findUser(queryCondition, (data) => { 
             if (data.length > 0) {
-                if (queryCondition == data[0].user_id && status == data[0].status && (getMd5(password) == judgePasswordLength(data[0].password))) {
+                if (queryCondition == data[0].user_id && status == data[0].status && (password == judgePasswordLength(data[0].password))) {
                     req.session.username = queryCondition;
                     res.send(JSON.stringify({
                         statusCode: 200,
@@ -56,7 +56,7 @@ module.exports = (app, md5, upload, dirname) => {
     app.post('/register', upload.array('imgfile', 40), (req, res) => {
         let queryCondition = {
             username: req.body.username,
-            password: md5(md5(req.body.password)),
+            password: req.body.password,
             avatar: req.files[0] && req.files[0].filename ? req.files[0].filename : ''
         };
 
@@ -157,7 +157,8 @@ module.exports = (app, md5, upload, dirname) => {
             status: req.body.status,
             name: req.body.name,
             number: req.body.number,
-            email: req.body.email
+            email: req.body.email,
+            applyTime:req.body.applyTime
         };
         let isRegister;
         await sqlFunc.getAllUser([], (data) => {

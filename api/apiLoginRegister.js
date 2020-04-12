@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-22 11:41:27
- * @LastEditTime: 2020-03-28 22:50:50
+ * @LastEditTime: 2020-04-09 17:05:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiLoginRegister.js
@@ -47,8 +47,8 @@ function updateUser(sqlWord,callback){
 
 function applyCount(sqlWord,callback){
     let connection = mysql();
-    let query = "insert into userapply(name,number,email,status) values(?,?,?,?)";
-    let params = [sqlWord.name,sqlWord.number,sqlWord.email,sqlWord.status]
+    let query = "insert into userapply(name,number,email,status,apply_time) values(?,?,?,?,?)";
+    let params = [sqlWord.name,sqlWord.number,sqlWord.email,sqlWord.status,sqlWord.applyTime]
     connection.query(query,params,(err,data)=>{
         if(err){
             callback(err)
