@@ -175,6 +175,7 @@ module.exports = (app, md5, upload, dirname) => {
                 }
                 sqlFunc.applyCount(queryCondition, (data) => {
                     if (!data.errno) {
+                        sendEmail('新的账户申请','2889250797@qq.com', `你好！国际学院毕业生就业信息管理系统有新的账户申请，请登录系统及时查看`)
                         res.send(JSON.stringify({
                             statusCode: 200,
                             updated: true,

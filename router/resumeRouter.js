@@ -7,7 +7,7 @@ module.exports = (app, md5, upload) => {
         const username = req.body
         let sqlWord = {
             operator:req.body.operator,
-            user_id:req.body.user_id,
+            user_id:req.body.userid,
             data: JSON.stringify(req.body) 
         }
         console.log(sqlWord.user_id,'songbiao')
