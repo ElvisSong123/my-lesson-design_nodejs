@@ -121,6 +121,7 @@ function addIntroduce(sqlWord,callback){
     })
     connection.end()
 }
+
 module.exports = {
     addPersonResume,
     findPersonResume,

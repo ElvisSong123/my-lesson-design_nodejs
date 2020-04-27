@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-27 13:14:41
- * @LastEditTime: 2020-03-29 14:12:37
+ * @LastEditTime: 2020-04-27 14:56:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiDeliverResume.js
@@ -45,8 +45,8 @@ function getDeliverResume(sqlWord,callback){
 
 function searchCandidateInfo(sqlWord,callback){
     let connection = mysql();
-    let query = "select * from deliver_resume where company_id = ? and (deliver_address = ?  or ? = '') and (deliver_jobname = ? or ? = '')  limit ?,?";
-    let params = [sqlWord.userid,sqlWord.place,sqlWord.place,sqlWord.jobName,sqlWord.jobName,sqlWord.nowPage,sqlWord.pageCount]
+    let query = "select * from deliver_resume where company_id = ? and (deliver_address like ?  or ? = '') and (deliver_jobname like ? or ? = '')  limit ?,?";
+    let params = [sqlWord.userid,`%${sqlWord.place}%`,sqlWord.place,`%${sqlWord.jobName}%`,sqlWord.jobName,sqlWord.nowPage,sqlWord.pageCount]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -61,8 +61,8 @@ function searchCandidateInfo(sqlWord,callback){
 function searchCandidateCount(sqlWord,callback){
     let connection = mysql();
     console.log(sqlWord)
-    let query = "select count(1) from deliver_resume where company_id = ? and (deliver_address = ?  or ? = '') and (deliver_jobname = ? or ? = '')";
-    let params = [sqlWord.userid,sqlWord.place,sqlWord.place,sqlWord.jobName,sqlWord.jobName]
+    let query = "select count(1) from deliver_resume where company_id = ? and (deliver_address like ?  or ? = '') and (deliver_jobname like ? or ? = '')";
+    let params = [sqlWord.userid,`%${sqlWord.place}%`,sqlWord.place,`%${sqlWord.jobName}%`,sqlWord.jobName]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)

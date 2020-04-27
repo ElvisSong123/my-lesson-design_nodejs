@@ -315,8 +315,12 @@ module.exports = (app, md5, upload, dirname) => {
 
     })
 
-    app.post('/getAllStudentCount', (req, res) => { 
-        sqlFunc.getAllStudentCount('', (data) => {
+    app.post('/getAllStudentCount', (req, res) => {
+        let sqlWord = {
+            sex : req.body.sex,
+            major: req.body.major
+        }
+        sqlFunc.getAllStudentCount(sqlWord, (data) => {
             if (data) {
                 res.send({
                     status: 200,

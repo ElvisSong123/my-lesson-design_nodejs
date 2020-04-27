@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-28 11:35:19
- * @LastEditTime: 2020-03-28 22:25:56
+ * @LastEditTime: 2020-04-27 15:25:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiEntryJob.js
@@ -80,8 +80,8 @@ function delEntryJob(sqlWord,callback){
 
 function getEntryStudentByPage(sqlWord,callback){
     let connection = mysql();
-    let query = "select * from entry_job where (sex = ?  or ? = '') and (major = ? or ? = '') limit ?,?";
-    let params = [sqlWord.sex,sqlWord.sex,sqlWord.major,sqlWord.major,sqlWord.nowPage,sqlWord.pageCount]
+    let query = "select * from entry_job where (sex = ?  or ? = '') and (major like ? or ? = '') limit ?,?";
+    let params = [sqlWord.sex,sqlWord.sex,`%${sqlWord.major}%`,sqlWord.major,sqlWord.nowPage,sqlWord.pageCount]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -96,8 +96,8 @@ function getEntryStudentByPage(sqlWord,callback){
 
 function getEntryStudentCount(sqlWord,callback){
     let connection = mysql();
-    let query = "select count(1) from entry_job where (sex = ?  or ? = '') and (major = ? or ? = '')";
-    let params = [sqlWord.sex,sqlWord.sex,sqlWord.major,sqlWord.major]
+    let query = "select count(1) from entry_job where (sex = ?  or ? = '') and (major like ? or ? = '')";
+    let params = [sqlWord.sex,sqlWord.sex,`%${sqlWord.major}%`,sqlWord.major]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)

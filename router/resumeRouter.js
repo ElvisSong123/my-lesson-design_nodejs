@@ -1,4 +1,5 @@
-let sqlFunc = require('../api/apiResume.js')
+let sqlFunc = require('../api/apiResume.js');
+let saveLoginFunc = require('../api/apiLoginRegister')
 let fs = require('fs');
 let url = require('url')
 
@@ -8,22 +9,32 @@ module.exports = (app, md5, upload) => {
         let sqlWord = {
             operator:req.body.operator,
             user_id:req.body.userid,
-            data: JSON.stringify(req.body) 
+            data: JSON.stringify(req.body),
+            sex:req.body.sex || '',
+            major:req.body.major || '',
+            update:false,
+            isSex:true
         }
-        console.log(sqlWord.user_id,'songbiao')
-        sqlFunc.addPersonResume(sqlWord,(data)=>{ 
-            if(data.affectedRows){
-                res.send(JSON.stringify({
-                    statusCode: 200,
-                    message: '保存成功'
-                }));
-            }else{
-                res.send(JSON.stringify({
-                    statusCode: 500,
-                    message: '服务器错误'
-                }));
-            }
+        new Promise((resolve,reject)=>{
+            saveLoginFunc.operateUserSexAndMajor(sqlWord,()=>{
+                resolve()
+            })
+        }).then(()=>{
+            sqlFunc.addPersonResume(sqlWord,(data)=>{ 
+                if(data.affectedRows){
+                    res.send(JSON.stringify({
+                        statusCode: 200,
+                        message: '保存成功'
+                    }));
+                }else{
+                    res.send(JSON.stringify({
+                        statusCode: 500,
+                        message: '服务器错误'
+                    }));
+                }
+            })
         })
+       
 
     })
 
@@ -51,22 +62,32 @@ module.exports = (app, md5, upload) => {
        
         let sqlWord = {
             userid:req.body.userid,
-            data: JSON.stringify(req.body) 
+            data: JSON.stringify(req.body),
+            user_id:req.body.userid,
+            sex:req.body.sex || '',
+            major:req.body.major || '',
+            update:true,
+            isSex:true,
         }
-
-        sqlFunc.editPersonResume(sqlWord,(data)=>{
-            console.log(data,124)
-            if(data.affectedRows){
-                res.send(JSON.stringify({
-                    statusCode: 200,
-                    message: '修改成功'
-                }));
-            }else{
-                res.send(JSON.stringify({
-                    statusCode: 500,
-                    message: '服务器错误'
-                }));
-            }
+        console.log(sqlWord.sex)
+        new Promise((resolve)=>{
+            saveLoginFunc.operateUserSexAndMajor(sqlWord,()=>{
+                resolve()
+            })
+        }).then(()=>{
+            sqlFunc.editPersonResume(sqlWord,(data)=>{ 
+                if(data.affectedRows){
+                    res.send(JSON.stringify({
+                        statusCode: 200,
+                        message: '修改成功'
+                    }));
+                }else{
+                    res.send(JSON.stringify({
+                        statusCode: 500,
+                        message: '服务器错误'
+                    }));
+                }
+            })
         })
 
     })
@@ -75,49 +96,67 @@ module.exports = (app, md5, upload) => {
        
         let sqlWord = {
             userid:req.body.userid,
-            data: JSON.stringify(req.body) 
-        }
-        console.log(sqlWord)
-
-        sqlFunc.addEducationInfo(sqlWord,(data)=>{
-            console.log(data,124)
-            if(data.affectedRows){
-                res.send(JSON.stringify({
-                    statusCode: 200,
-                    message: '保存成功'
-                }));
-            }else{
-                res.send(JSON.stringify({
-                    statusCode: 500,
-                    message: '服务器错误'
-                }));
-            }
+            user_id:req.body.userid,
+            data: JSON.stringify(req.body),
+            sex:req.body.sex || '',
+            major:req.body.major || '',
+            update:false,
+            isMajor:true,
+        } 
+        new Promise((resolve,reject)=>{
+            saveLoginFunc.operateUserSexAndMajor(sqlWord,()=>{
+                resolve()
+            })
+        }).then(()=>{
+            sqlFunc.addEducationInfo(sqlWord,(data)=>{
+                console.log(data,124)
+                if(data.affectedRows){
+                    res.send(JSON.stringify({
+                        statusCode: 200,
+                        message: '保存成功'
+                    }));
+                }else{
+                    res.send(JSON.stringify({
+                        statusCode: 500,
+                        message: '服务器错误'
+                    }));
+                }
+            })
         })
+       
 
     })
     app.post('/eidtEducationInfo', function (req, res) {
        
         let sqlWord = {
             userid:req.body.userid,
-            data: JSON.stringify(req.body) 
-        }
-        console.log(sqlWord)
-
-        sqlFunc.addEducationInfo(sqlWord,(data)=>{
-            console.log(data,124)
-            if(data.affectedRows){
-                res.send(JSON.stringify({
-                    statusCode: 200,
-                    message: '修改成功'
-                }));
-            }else{
-                res.send(JSON.stringify({
-                    statusCode: 500,
-                    message: '服务器错误'
-                }));
-            }
+            user_id:req.body.userid,
+            data: JSON.stringify(req.body),
+            sex:req.body.sex || '',
+            major:req.body.major || '',
+            update:true,
+            isMajor:true
+        } 
+        new Promise((resolve,reject)=>{
+            saveLoginFunc.operateUserSexAndMajor(sqlWord,()=>{
+                resolve()
+            })
+        }).then(()=>{
+            sqlFunc.addEducationInfo(sqlWord,(data)=>{
+                console.log(data,124)
+                if(data.affectedRows){
+                    res.send(JSON.stringify({
+                        statusCode: 200,
+                        message: '修改成功'
+                    }));
+                }else{
+                    res.send(JSON.stringify({
+                        statusCode: 500,
+                        message: '服务器错误'
+                    }));
+                }
+            })
         })
-
     })
 
     app.post('/addInternshipInfo', function (req, res) {

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-22 11:41:27
- * @LastEditTime: 2020-04-09 17:05:38
+ * @LastEditTime: 2020-04-27 23:05:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiLoginRegister.js
@@ -42,6 +42,36 @@ function updateUser(sqlWord,callback){
             callback(data)
         }
     })
+    connection.end()
+}
+
+function operateUserSexAndMajor(sqlWord,callback){
+    let connection = mysql();
+    let query = '';
+    let params;
+    if(sqlWord.update && sqlWord.isSex){
+        console.log(sqlWord,'haha')
+        query = "update userlogin set sex = ? where user_id = ?"
+        params = [sqlWord.sex,sqlWord.user_id];
+    }else if(!sqlWord.update && sqlWord.isSex){
+        query = "insert into userlogin(sex) values(?) where user_id = ?"
+        params = [sqlWord.sex,sqlWord.user_id]
+    }else if(sqlWord.update && sqlWord.isMajor){
+        query = "update userlogin set major = ? where user_id = ?"
+        params = [sqlWord.major,sqlWord.user_id]
+    }else if(!sqlWord.update && sqlWord.isMajor){
+        query = "insert into userlogin(major) values(?) where user_id = ?"
+        params = [sqlWord.major,sqlWord.user_id]
+    }
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            console.log(err)
+            callback(err)
+        }else{ 
+            callback()
+        }
+    })
+    callback();
     connection.end()
 }
 
@@ -140,7 +170,8 @@ function signOutLogin(sqlWord,callback){
 
 function getAllStudentCount(sqlWord,callback){
     let connection = mysql();
-    connection.query("select count(1) from userlogin where status = '学生'",(err,data)=>{
+    let query = "select count(1) from userlogin where status = '学生' and (sex = ? or ? = '') and (major like ? or ? = '')"
+    connection.query(query,[sqlWord.sex,sqlWord.sex,`%${sqlWord.major}%`,sqlWord.major],(err,data)=>{
         if(err){
             callback(err)
         }else{ 
@@ -161,5 +192,6 @@ module.exports = {
     getAllUser,
     addUserApply,
     delapplyCount,
-    getAllStudentCount
+    getAllStudentCount,
+    operateUserSexAndMajor
 }

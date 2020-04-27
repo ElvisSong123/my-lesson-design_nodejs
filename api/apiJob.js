@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-25 13:53:29
- * @LastEditTime: 2020-03-26 23:14:47
+ * @LastEditTime: 2020-04-27 15:00:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiJob.js
@@ -92,8 +92,8 @@ function getJobInfoByPage(sqlWord,callback){
 
 function searchJobInfo(sqlWord,callback){
     let connection = mysql();
-    let query = "select * from job_info where (job_name = ?  or ? = '') and (job_address = ? or ? = '') and (company_name = ? or ? = '') limit ?,?";
-    let params = [sqlWord.job,sqlWord.job,sqlWord.place,sqlWord.place,sqlWord.name,sqlWord.name,sqlWord.nowPage,sqlWord.pageCount]
+    let query = "select * from job_info where (job_name like ?  or ? = '') and (job_address like ? or ? = '') and (company_name like ? or ? = '') limit ?,?";
+    let params = [`%${sqlWord.job}%`,sqlWord.job,`%${sqlWord.place}%`,sqlWord.place,`%${sqlWord.name}%`,sqlWord.name,sqlWord.nowPage,sqlWord.pageCount]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
@@ -108,8 +108,8 @@ function searchJobInfo(sqlWord,callback){
 
 function getJobDataCount(sqlWord,callback){
     let connection = mysql();
-    let query = "select count(1) from job_info where (job_name = ?  or ? = '') and (job_address = ? or ? = '') and (company_name = ? or ? = '')";
-    let params = [sqlWord.job,sqlWord.job,sqlWord.place,sqlWord.place,sqlWord.name,sqlWord.name]
+    let query = "select count(1) from job_info where (job_name like ?  or ? = '') and (job_address like ? or ? = '') and (company_name like ? or ? = '')";
+    let params = [`%${sqlWord.job}%`,sqlWord.job,`%${sqlWord.place}%`,sqlWord.place,`%${sqlWord.name}%`,sqlWord.name]
     connection.query(query,params,(err,data)=>{
         if(err){
             console.log(err)
