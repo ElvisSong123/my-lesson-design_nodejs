@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-22 11:41:27
- * @LastEditTime: 2020-04-27 23:05:15
+ * @LastEditTime: 2020-04-29 20:51:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\api\apiLoginRegister.js
@@ -117,7 +117,21 @@ function delapplyCount(sqlWord,callback){
 
 function getAllUser(sqlWord,callback){
     let connection = mysql();
-    let query = "select username,status,user_id,email from userlogin";
+    let query = "select username,status,user_id,email from userlogin where (major = ? or ? = '') and (status = ? or ? = '') limit ?,?";
+    let params = [sqlWord.major,sqlWord.major,sqlWord.statusValue,sqlWord.statusValue,sqlWord.nowPage,sqlWord.pageCount];
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
+
+function getAllUserNotByPage(sqlWord,callback){
+    let connection = mysql();
+    let query = "select user_id from userlogin"; 
     connection.query(query,(err,data)=>{
         if(err){
             callback(err)
@@ -128,6 +142,19 @@ function getAllUser(sqlWord,callback){
     connection.end()
 }
 
+function getAllUserCount (sqlWord,callback){
+    let connection = mysql();
+    let query = "select count(1) from userlogin where (major like ? or ? = '') and (status = ? or ? = '')";
+    let params = [`%${sqlWord.major}%`,sqlWord.major,sqlWord.statusValue,sqlWord.statusValue];
+    connection.query(query,params,(err,data)=>{
+        if(err){
+            callback(err)
+        }else{ 
+            callback(data)
+        }
+    })
+    connection.end()
+}
 function addUserApply(sqlWord,callback){
     let connection = mysql();
     let query = "insert into userlogin(username,password,status,user_id,email) values(?,?,?,?,?)";
@@ -193,5 +220,7 @@ module.exports = {
     addUserApply,
     delapplyCount,
     getAllStudentCount,
-    operateUserSexAndMajor
+    operateUserSexAndMajor,
+    getAllUserCount,
+    getAllUserNotByPage
 }

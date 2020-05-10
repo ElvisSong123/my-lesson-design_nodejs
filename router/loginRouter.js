@@ -161,7 +161,7 @@ module.exports = (app, md5, upload, dirname) => {
             applyTime:req.body.applyTime
         };
         let isRegister;
-        await sqlFunc.getAllUser([], (data) => {
+        await sqlFunc.getAllUserNotByPage([], (data) => {
             if (data) {
                 for(let prop in data){
                     if(data[prop].user_id == queryCondition.number){
@@ -217,7 +217,13 @@ module.exports = (app, md5, upload, dirname) => {
     })
 
     app.post('/getAllUser', (req, res) => {
-        sqlFunc.getAllUser([], (data) => {
+        let sqlWord = {
+            major:req.body.major,
+            statusValue:req.body.statusValue,
+            nowPage:(req.body.nowPage - 1) * req.body.pageCount,
+            pageCount:req.body.pageCount
+        }
+        sqlFunc.getAllUser(sqlWord, (data) => {
             if (data) {
                 res.send({
                     status: 200,
@@ -231,7 +237,26 @@ module.exports = (app, md5, upload, dirname) => {
             }
         });
     })
-
+    
+    app.post('/getAllUserCount', (req, res) => {
+        let sqlWord = {
+            major:req.body.major,
+            statusValue:req.body.statusValue, 
+        }
+        sqlFunc.getAllUserCount(sqlWord, (data) => {
+            if (data) {
+                res.send({
+                    status: 200,
+                    data
+                })
+            } else {
+                res.send({
+                    status: 500,
+                    message: '服务器报错'
+                })
+            }
+        });
+    })
     app.post('/addUserApply', (req, res) => {
         let queryCondition = {
             ...req.body
