@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-22 11:41:27
- * @LastEditTime: 2020-03-24 21:35:04
+ * @LastEditTime: 2020-05-15 10:43:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \毕业设计\server\server.js
@@ -68,6 +68,6 @@ app.use(cors()); //cors解决跨域
 
 router(app,md5,upload,__dirname)
 
-app.listen('12306', () => {
+app.listen('12307', () => {
     console.log('服务器经启动')
 })
